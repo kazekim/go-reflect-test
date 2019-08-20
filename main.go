@@ -28,7 +28,6 @@ type company struct {
 func main() {
 
 	n := "Kim"
-	tel := "66800000000"
 	s := student{
 		name:      "Jirawat",
 		yearOfGraduation: 58,
@@ -37,7 +36,6 @@ func main() {
 			name: "Macademia Inc.",
 			city: "Bangkok",
 			postCode:10310,
-			tel: &tel,
 		},
 		grade: map[string]float64{
 			"1": 3.83,
@@ -98,10 +96,6 @@ func main() {
 	k = v.Field(0).Kind()
 	fmt.Println("Kind2 ", k)
 
-	a := 1
-	t = reflect.TypeOf(a)
-	fmt.Println("Type ", t)
-
 	v1 := reflect.Indirect(reflect.ValueOf(&s))
 	addr := v1.Addr()
 	fmt.Println("Addr ", addr)
@@ -111,4 +105,74 @@ func main() {
 
 	kv := v1.Kind()
 	fmt.Println("Kind ", kv)
+
+	fmt.Println(v.CanAddr())
+	fmt.Println(v1.CanAddr())
+
+	fmt.Println(v.CanSet())
+	fmt.Println(v1.CanSet())
+
+	sv6 := v.FieldByName("specialist")
+	fmt.Println("Cap : ", sv6.Cap())
+
+	sv3 := v.FieldByName("nickName")
+	fmt.Println("Kind : ", sv3.Type())
+	fmt.Println("Elem : ", sv3.Elem().Type())
+
+	fmt.Println("Value: ", sv6)
+
+	fmt.Println("Num Fields: ", v.NumField())
+
+	sv1 := v.FieldByName("name")
+	fmt.Println("Value: ", sv1.String())
+
+	fmt.Println("Is Nil?: ", sv3.IsNil())
+	fmt.Println("Is Valid?: ", sv1.IsValid())
+
+	fmt.Println("Length: ", sv6.Len())
+	fmt.Println("Length: ", sv1.Len())
+
+
+	sv5 := v.FieldByName("grade")
+	key := "1"
+	keyV := reflect.ValueOf(key)
+	fmt.Println("Grade ", key, ": ",sv5.MapIndex(keyV))
+	fmt.Println("Keys ", sv5.MapKeys())
+
+	iter := sv5.MapRange()
+	for iter.Next() {
+		k := iter.Key()
+		v := iter.Value()
+		fmt.Println(k, " ", v)
+	}
+
+	x := "test"
+	vx := reflect.Indirect(reflect.ValueOf(&x))
+	y := "Jirawat"
+	vy := reflect.ValueOf(y)
+	vx.Set(vy)
+	fmt.Println("Vx ", vx.Type(), " ", vx)
+
+	z := "GoLang"
+	vz := reflect.ValueOf(z)
+	vx.SetString(vz.String())
+	fmt.Println("Vx", vx.Type(), " ", vx)
+
+	if f4, ok := t.FieldByName("company"); ok {
+		fmt.Println("Name ",f4.Name)
+		fmt.Println("PkgPath ",f4.PkgPath)
+		fmt.Println("Type ",f4.Type)
+		fmt.Println("Tag ",f4.Tag)
+		fmt.Println("OffSet ",f4.Offset)
+	}
+
+	if f6, ok := t.FieldByName("specialist"); ok {
+		fmt.Println("Index ",f6.Index)
+	}
+
+
+	a := 1
+	t = reflect.TypeOf(a)
+	fmt.Println("Type ", t)
+
 }
